@@ -141,23 +141,25 @@ public class SmsAutoFillPlugin implements FlutterPlugin, ActivityAware, MethodCa
 
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     private void requestHint() {
-
-        if (!isSimSupport()) {
-            if (pendingHintResult != null) {
-                pendingHintResult.success(null);
-            }
-            return;
-        }
-
-        HintRequest hintRequest = new HintRequest.Builder()
-                .setPhoneNumberIdentifierSupported(true)
-                .build();
-        GoogleApiClient mCredentialsClient = new GoogleApiClient.Builder(activity)
-                .addApi(Auth.CREDENTIALS_API)
-                .build();
-        PendingIntent intent = Auth.CredentialsApi.getHintPickerIntent(
-                mCredentialsClient, hintRequest);
         try {
+            if (!isSimSupport()) {
+                if (pendingHintResult != null) {
+                    pendingHintResult.success(null);
+                }
+                return;
+            }
+
+            HintRequest hintRequest = new HintRequest.Builder()
+                    .setPhoneNumberIdentifierSupported(true)
+                    .build();
+            /*
+             * GoogleApiClient mCredentialsClient = new GoogleApiClient.Builder(activity)
+             * .addApi(Auth.CREDENTIALS_API)
+             * .build();
+             * PendingIntent intent = Auth.CredentialsApi.getHintPickerIntent(
+             * mCredentialsClient, hintRequest);
+             */
+
             activity.startIntentSenderForResult(intent.getIntentSender(),
                     SmsAutoFillPlugin.PHONE_HINT_REQUEST, null, 0, 0, 0);
         } catch (IntentSender.SendIntentException e) {
